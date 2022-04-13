@@ -1,17 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+require('dotenv').config();
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const express = require("express")
+const morgan = require("morgan")
+const cors = require('cors')
+const app = express()
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+app.use(morgan("dev"))
+app.use(cors())
+app.disable('x-powered-by');
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+const router = require('./router')
+app.use('/', router);
+
+app.get('*', (req, res) => {
+  res.json({ ok: true})
+})
+
+const port = process.env.PORT || 4000;
+
+app.listen(port, () => {
+  console.log(`\n Server is running on http://localhost:${port}\n`)
+})
